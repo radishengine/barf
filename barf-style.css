@@ -15,3 +15,7 @@ html, body {
   margin: 5px;
   padding: 5px;
 }
+
+.dropzone.dropping {
+  background: #aaa;
+}
