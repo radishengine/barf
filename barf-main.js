@@ -4,15 +4,18 @@ requirejs.config({
 
 require([
   'domReady!'
+  ,'NesRom'
 ],
 function(
   domReady
+  ,NesRom
 ) {
 
   'use strict';
   
   function loadBytes(bytes) {
-    console.log(bytes);
+    var rom = new NesRom(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    console.log(rom);
   }
   
   function getTemplate(query) {
