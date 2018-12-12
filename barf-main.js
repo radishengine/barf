@@ -37,8 +37,12 @@ function(
       }
       e.preventDefault();
     },
+    ondragover: function(e) {
+      e.preventDefault();
+    },
     ondrop: function(e) {
       this.dragCount = 0;
+      this.classList.remove('dropping');
       e.preventDefault();
       const files = e.dataTransfer && e.dataTransfer.files;
       if (files && files[0]) {
