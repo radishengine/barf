@@ -1,0 +1,18 @@
+
+html, body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
+.dropzone {
+  border: 2px dashed #888;
+  font-size: 200%;
+  font-weight: bold;
+  text-align: center;
+  margin: 5px;
+  padding: 5px;
+}
