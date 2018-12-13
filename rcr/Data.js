@@ -31,7 +31,7 @@ function(
           buf[i] = String.fromCharCode(0xF700 | bytes[i]);
         }
       }
-      return buf.join();
+      return buf.join('');
     },
     encodeText: function(str) {
       var bytes = new Uint8Array(str.length);
