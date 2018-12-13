@@ -43,10 +43,10 @@ define(function() {
     },
     // TODO: support PlayChoice
     get title() {
-      const offset = 0x10 + this.bytes[3]*0x4000 + this.bytes[4]*0x2000;
+      const offset = 0x10 + this.bytes[4]*0x4000 + this.bytes[5]*0x2000;
       const title = String.fromCharCode.apply(null, this.bytes.subarray(offset))
         .replace(/\0[\s\S]*| +$/, '');
-      return title.length > 0 ? title : null;
+      return (title.length > 0) ? title : null;
     },
   };
   
