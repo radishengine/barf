@@ -23,7 +23,7 @@ define(function() {
       const prg = new Array(this.bytes[3]);
       var offset = 0x10;
       for (var i = 0; i < prg.length; i++) {
-        prg[i] = this.subarray(offset, offset + 0x4000);
+        prg[i] = this.bytes.subarray(offset, offset + 0x4000);
         offset += 0x4000;
       }
       Object.freeze(prg);
@@ -34,7 +34,7 @@ define(function() {
       const chr = new Array(this.bytes[4]);
       var offset = 0x10 + 0x4000 * this.bytes[3];
       for (var i = 0; i < chr.length; i++) {
-        chr[i] = this.subarray(offset, offset + 0x2000);
+        chr[i] = this.bytes.subarray(offset, offset + 0x2000);
         offset += 0x2000;
       }
       Object.freeze(chr);
