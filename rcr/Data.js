@@ -72,9 +72,9 @@ function(
       
       let convoData = nesRom.gt(this.$conversationStrings);
       bank = convoData.bank;
-      let pos = npcNameData.bankOffset;
-      var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
-      let firstOffset = bank.byteLength;
+      pos = npcNameData.bankOffset;
+      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      firstOffset = bank.byteLength;
       this.conversationStrings = [];
       do {
         let offset = dv.getUint16(pos, true);
