@@ -94,7 +94,7 @@ function(
         pos += 2;
       } while (pos < firstOffset);
       
-      let shopConvoData = nesRom.get(this.$locationNames);
+      let shopConvoData = nesRom.get(this.$shopConvos);
       bank = shopConvoData.bank;
       pos = shopConvoData.bankOffset;
       dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
