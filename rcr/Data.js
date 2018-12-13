@@ -60,7 +60,7 @@ function(
           offset ^= 0x8000;
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
-          while (bank[endOffset] === 5) endOffset++;
+          while (bank[endOffset] !== 5) endOffset++;
           this.npcNames.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
