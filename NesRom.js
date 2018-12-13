@@ -20,7 +20,7 @@ define(function() {
       return this.signature === 'NES\x1A';
     },
     get prg() {
-      const prg = new Array(this.bytes[3]);
+      const prg = new Array(this.bytes[4]);
       var offset = 0x10;
       for (var i = 0; i < prg.length; i++) {
         prg[i] = this.bytes.subarray(offset, offset + 0x4000);
@@ -31,8 +31,8 @@ define(function() {
       return prg;
     },
     get chr() {
-      const chr = new Array(this.bytes[4]);
-      var offset = 0x10 + 0x4000 * this.bytes[3];
+      const chr = new Array(this.bytes[5]);
+      var offset = 0x10 + 0x4000 * this.bytes[4];
       for (var i = 0; i < chr.length; i++) {
         chr[i] = this.bytes.subarray(offset, offset + 0x2000);
         offset += 0x2000;
