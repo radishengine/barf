@@ -17,6 +17,8 @@ function(
     $wideBackgrounds: 'prg[0]:$0000-$39B0',
     $npcNames: 'prg[0]:$3D20-$4000',
     $conversationStrings: 'prg[1]:$0020-$1C00',
+    $locationTitleStringIDs: 'prg[1]:$1CBB-$1CDE',
+    $shopConvos: 'prg[2]:$1F46-$21D2',
     
     charmap: charmap,
     charLookup: charLookup,
@@ -92,24 +94,24 @@ function(
         pos += 2;
       } while (pos < firstOffset);
       
-      let locationNameData = nesRom.get(this.$locationNames);
-      bank = locationNameData.bank;
-      pos = locationNameData.bankOffset;
+      let shopConvoData = nesRom.get(this.$locationNames);
+      bank = shopConvoData.bank;
+      pos = shopConvoData.bankOffset;
       dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
       firstOffset = bank.byteLength;
-      this.locationNames = [];
+      this.shopConversationStrings = [];
       do {
         let offset = dv.getUint16(pos, true);
-        const highBit = offset & 0x8000;
-        if (highBit) {
-          offset ^= 0x8000;
+        const memLoc = offset & 0xC000;
+        if (memLoc === 0x4000) {
+          offset ^= 0x4000;
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
           while (bank[endOffset] !== 5) endOffset++;
-          this.locationNames.push(this.decodeText(bank.subarray(offset, endOffset)));
+          this.shopConversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
-          this.locationNames.push(offset);
+          this.shopConversationStrings.push(offset);
         }
         pos += 2;
       } while (pos < firstOffset);
