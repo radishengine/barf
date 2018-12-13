@@ -102,9 +102,9 @@ function(
       this.shopConversationStrings = [];
       do {
         let offset = dv.getUint16(pos, true);
-        const memLoc = offset & 0xC000;
-        if (memLoc === 0x4000) {
-          offset ^= 0x4000;
+        const highBit = offset & 0x8000;
+        if (highBit) {
+          offset ^= 0x8000;
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
           while (bank[endOffset] !== 5) endOffset++;
