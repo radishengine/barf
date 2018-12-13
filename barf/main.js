@@ -1,5 +1,7 @@
+
 requirejs.config({
-  timeout: 0,
+  waitSeconds: 0,
+  baseUrl: '..',
 });
 
 require([
