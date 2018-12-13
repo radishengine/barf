@@ -23,7 +23,9 @@ define(function() {
       const prg = new Array(this.bytes[4]);
       var offset = 0x10;
       for (var i = 0; i < prg.length; i++) {
-        prg[i] = this.bytes.subarray(offset, offset + 0x4000);
+        prg[i] = Object.assign(
+          this.bytes.subarray(offset, offset + 0x4000),
+          {bankType:'prg', bankNumber:i});
         offset += 0x4000;
       }
       Object.freeze(prg);
@@ -34,7 +36,9 @@ define(function() {
       const chr = new Array(this.bytes[5]);
       var offset = 0x10 + 0x4000 * this.bytes[4];
       for (var i = 0; i < chr.length; i++) {
-        chr[i] = this.bytes.subarray(offset, offset + 0x2000);
+        chr[i] = Object.assign(
+          this.bytes.subarray(offset, offset + 0x2000),
+          {bankType:'chr', bankNumber:i});
         offset += 0x2000;
       }
       Object.freeze(chr);
@@ -51,15 +55,17 @@ define(function() {
     get: function(addr) {
       const match = addr.match(/^(prg|chr)\[(\d+)\]:\$([a-fA-F0-9]+)-\$([a-fA-F0-9]+)$/);
       if (!match) throw new Error('invalid rom content address');
+      const bank = this[match[1]][+match[2]],
+            startOffset = parseInt(match[3], 16),
+            endOffset = parseInt(match[4], 16);
       return Object.assign(
-        this[match[1]][+match[2]].subarray(parseInt(match[3], 16), parseInt(match[4], 16)),
-        {
-          chipType: match[1],
-          chipNumber: +match[2],
-          chipOffset: parseInt(match[3], 16),
-        });
+        bank.subarray(startOffset, endOffset),
+        {bank:bank, bankOffset:startOffset});
     },
   };
+  
+  NesRom.PRG_BANK_BYTES = 0x4000;
+  NesRom.CHR_BANK_BYTES = 0x2000;
   
   return NesRom;
   
