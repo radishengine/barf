@@ -19,6 +19,7 @@ function(
     $conversationStrings: 'prg[1]:$0020-$1C00',
     $locationTitleStringIDs: 'prg[1]:$1CBB-$1CDE',
     $shopConvos: 'prg[2]:$1F46-$21D2',
+    $miscStrings: 'prg[3]:$3200-$3E00',
     
     charmap: charmap,
     charLookup: charLookup,
@@ -115,6 +116,29 @@ function(
         }
         pos += 2;
       } while (pos < firstOffset);
+      
+      let miscStringData = nesRom.get(this.$miscStrings);
+      bank = miscStringData.bank;
+      pos = miscStringData.bankOffset;
+      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      firstOffset = bank.byteLength;
+      this.miscStrings = [];
+      do {
+        let offset = dv.getUint16(pos, true);
+        const highBit = offset & 0x8000;
+        if (highBit) {
+          offset ^= 0x8000;
+          firstOffset = Math.min(firstOffset, offset);
+          var endOffset = offset;
+          while (bank[endOffset] !== 5) endOffset++;
+          this.miscStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
+        }
+        else {
+          this.miscStrings.push(offset);
+        }
+        pos += 2;
+      } while (pos < firstOffset);
+      
     },
     
   };
