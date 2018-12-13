@@ -72,7 +72,7 @@ function(
       
       let convoData = nesRom.get(this.$conversationStrings);
       bank = convoData.bank;
-      pos = npcNameData.bankOffset;
+      pos = convoData.bankOffset;
       dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
       firstOffset = bank.byteLength;
       this.conversationStrings = [];
@@ -83,7 +83,7 @@ function(
           offset ^= 0x8000;
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
-          while (bank[endOffset] !== 5) endOffset++;
+          while (bank[endOffset] !== 0) endOffset++;
           this.conversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
