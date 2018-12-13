@@ -70,7 +70,7 @@ function(
         pos += 2;
       } while (pos < firstOffset);
       
-      let convoData = nesRom.gt(this.$conversationStrings);
+      let convoData = nesRom.get(this.$conversationStrings);
       bank = convoData.bank;
       pos = npcNameData.bankOffset;
       dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
