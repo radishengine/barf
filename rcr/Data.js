@@ -16,7 +16,7 @@ function(
   
     $wideBackgrounds: 'prg[0]:$0000-$39B0',
     $npcNames: 'prg[0]:$3D20-$4000',
-    npcNames: null,
+    $conversationStrings: 'prg[1]:$0020-0x1C00',
     
     charmap: charmap,
     charLookup: charLookup,
@@ -66,6 +66,28 @@ function(
         else {
           // first two: $0672, $0677
           this.npcNames.push(offset);
+        }
+        pos += 2;
+      } while (pos < firstOffset);
+      
+      let convoData = nesRom.gt(this.$conversationStrings);
+      bank = convoData.bank;
+      let pos = npcNameData.bankOffset;
+      var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      let firstOffset = bank.byteLength;
+      this.conversationStrings = [];
+      do {
+        let offset = dv.getUint16(pos, true);
+        const highBit = offset & 0x8000;
+        if (highBit) {
+          offset ^= 0x8000;
+          firstOffset = Math.min(firstOffset, offset);
+          var endOffset = offset;
+          while (bank[endOffset] !== 5) endOffset++;
+          this.conversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
+        }
+        else {
+          this.conversationStrings.push(offset);
         }
         pos += 2;
       } while (pos < firstOffset);
