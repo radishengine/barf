@@ -46,13 +46,12 @@ function(
     },
     
     load: function(nesRom) {
-      const npcNameBytes = nesRom.get(this.$npcNames);
-      const npcNameDV = new DataView(npcNameBytes.buffer, npcNameBytes.byteOffset, npcNameBytes.byteLength);
-      let pos = 0;
-      let firstOffset = npcNameBytes.length;
+      var dv = new DataView(nesRom.prg[0].buffer, nesRom.prg[0].byteOffset, nesRom.prg[0].byteLength);
+      let pos = this.$npcNames;
+      let firstOffset = dv.byteLength;
       let offsets = [];
       do {
-        let offset = npcNameDV.getUint16(pos, true);
+        let offset = dv.getUint16(pos, true);
         const highBit = offset & 0x8000;
         if (highBit) {
           offset ^= 0x8000;
