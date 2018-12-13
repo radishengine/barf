@@ -16,7 +16,7 @@ function(
   
     $wideBackgrounds: 'prg[0]:$0000-$39B0',
     $npcNames: 'prg[0]:$3D20-$4000',
-    $conversationStrings: 'prg[1]:$0020-0x1C00',
+    $conversationStrings: 'prg[1]:$0020-$1C00',
     
     charmap: charmap,
     charLookup: charLookup,
