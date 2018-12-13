@@ -46,9 +46,11 @@ function(
     },
     
     load: function(nesRom) {
-      var dv = new DataView(nesRom.prg[0].buffer, nesRom.prg[0].byteOffset, nesRom.prg[0].byteLength);
-      let pos = this.$npcNames;
-      let firstOffset = dv.byteLength;
+      let npcNameData = nesRom.get(this.$npcNames);
+      let bank = npcNameData.bank;
+      let pos = npcNameData.bankOffset;
+      var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      let firstOffset = bank.byteLength;
       let offsets = [];
       do {
         let offset = dv.getUint16(pos, true);
