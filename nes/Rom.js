@@ -48,6 +48,11 @@ define(function() {
         .replace(/\0[\s\S]*| +$/, '');
       return (title.length > 0) ? title : null;
     },
+    get: function(addr) {
+      const match = addr.match(/^(prg|chr)\[(\d+)\]:\$([a-fA-F0-9]+)-\$([a-fA-F0-9]+)$/);
+      if (!match) throw new Error('invalid rom content address');
+      return this[match[1]][+match[2]].subarray(parseInt(match[3], 16), parseInt(match[4], 16));
+    },
   };
   
   return NesRom;
