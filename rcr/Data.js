@@ -91,6 +91,28 @@ function(
         }
         pos += 2;
       } while (pos < firstOffset);
+      
+      let locationNameData = nesRom.get(this.$locationNames);
+      bank = locationNameData.bank;
+      pos = locationNameData.bankOffset;
+      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      firstOffset = bank.byteLength;
+      this.locationNames = [];
+      do {
+        let offset = dv.getUint16(pos, true);
+        const highBit = offset & 0x8000;
+        if (highBit) {
+          offset ^= 0x8000;
+          firstOffset = Math.min(firstOffset, offset);
+          var endOffset = offset;
+          while (bank[endOffset] !== 5) endOffset++;
+          this.locationNames.push(this.decodeText(bank.subarray(offset, endOffset)));
+        }
+        else {
+          this.locationNames.push(offset);
+        }
+        pos += 2;
+      } while (pos < firstOffset);
     },
     
   };
