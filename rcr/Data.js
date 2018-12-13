@@ -16,6 +16,7 @@ function(
   
     $wideBackgrounds: 'prg[0]:$0000-$39B0',
     $npcNames: 'prg[0]:$3D20-$4000',
+    npcNames: null,
     
     charmap: charmap,
     charLookup: charLookup,
@@ -51,22 +52,23 @@ function(
       let pos = npcNameData.bankOffset;
       var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
       let firstOffset = bank.byteLength;
-      let offsets = [];
+      this.npcNames = [];
       do {
         let offset = dv.getUint16(pos, true);
         const highBit = offset & 0x8000;
         if (highBit) {
           offset ^= 0x8000;
           firstOffset = Math.min(firstOffset, offset);
-          offsets.push('prg[0]:$'+offset.toString(16));
+          var endOffset = offset;
+          while (bank[endOffset] === 5) endOffset++;
+          this.npcNames.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
           // first two: $0672, $0677
-          offsets.push('???:$'+offset.toString(16));
+          this.npcNames.push(offset);
         }
         pos += 2;
       } while (pos < firstOffset);
-      console.log(offsets);
     },
     
   };
