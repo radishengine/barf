@@ -7,17 +7,21 @@ requirejs.config({
 require([
   'domReady!'
   ,'nes/Rom'
+  ,'rcr/Data'
 ],
 function(
   domReady
   ,NesRom
+  ,RCRData
 ) {
 
   'use strict';
   
   function loadBytes(bytes) {
     var rom = new NesRom(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-    console.log(rom);
+    var rcr = new RCRData;
+    rcr.load(rom);
+    console.log(rcr);
   }
   
   function getTemplate(query) {
