@@ -83,7 +83,7 @@ function(
           offset ^= 0x8000;
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
-          while (bank[endOffset] !== 0) endOffset++;
+          while (bank[endOffset] !== 5) endOffset++;
           this.conversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
