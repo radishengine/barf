@@ -51,7 +51,13 @@ define(function() {
     get: function(addr) {
       const match = addr.match(/^(prg|chr)\[(\d+)\]:\$([a-fA-F0-9]+)-\$([a-fA-F0-9]+)$/);
       if (!match) throw new Error('invalid rom content address');
-      return this[match[1]][+match[2]].subarray(parseInt(match[3], 16), parseInt(match[4], 16));
+      return Object.assign(
+        this[match[1]][+match[2]].subarray(parseInt(match[3], 16), parseInt(match[4], 16)),
+        {
+          chipType: match[1],
+          chipNumber: +match[2],
+          chipOffset: parseInt(match[3], 16),
+        });
     },
   };
   
