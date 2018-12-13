@@ -4,7 +4,7 @@ requirejs.config({
 
 require([
   'domReady!'
-  ,'NesRom'
+  ,'nes/Rom'
 ],
 function(
   domReady
