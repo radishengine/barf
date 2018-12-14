@@ -21,6 +21,7 @@ function(
     $shopConvos: 'prg[2]:$1F46-$21D2',
     $miscStrings: 'prg[3]:$3200-$3E00',
     $shopSubmenuStrings: 'prg[2]:$2351-$23E2',
+    $palettes: 'prg[7]:$26F1-$2B9D',
     
     charmap: charmap,
     charLookup: charLookup,
@@ -51,9 +52,9 @@ function(
     },
     
     readStrings: function(data) {
-      let bank = data.bank;
+      const bank = data.bank;
       let pos = data.bankOffset;
-      var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      const dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
       let firstOffset = data.bankOffset + data.byteLength;
       let list = [];
       do {
@@ -74,12 +75,40 @@ function(
       return list;
     },
     
+    readPalettes: function(data) {
+      const bank = data.bank;
+      let pos = data.bankOffset;
+      const dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
+      let firstOffset = data.bankOffset + data.byteLength;
+      let list = [];
+      do {
+        let offset = dv.getUint16(pos, true);
+        const highBits = offset & 0xC000;
+        if (highBits === 0xC000) {
+          offset ^= highBits;
+          firstOffset = Math.min(firstOffset, offset);
+          list.push([
+            bank.slice(offset, offset+4),
+            bank.slice(offset+4, offset+8),
+            bank.slice(offset+8, offset+12),
+            bank.slice(offset+12, offset+16),
+          ]);
+        }
+        else {
+          list.push(offset);
+        }
+        pos += 2;
+      } while (pos < firstOffset);
+      return list;
+    },
+    
     load: function(nesRom) {
       this.npcNames = this.readStrings(nesRom.get(this.$npcNames));
       this.conversationStrings = this.readStrings(nesRom.get(this.$conversationStrings));
       this.shopConversationStrings = this.readStrings(nesRom.get(this.$shopConvos));
       this.miscStrings = this.readStrings(nesRom.get(this.$miscStrings));
       this.shopSubmenuStrings = this.readStrings(nesRom.get(this.$shopSubmenuStrings));
+      this.palettes = this.readPalettes(nesRom.get(this.$palettes));
     },
     
   };
