@@ -2,7 +2,7 @@ define(function() {
   
   'use strict';
   
-  return new Uint32Array([
+  return [
     '#788084',
     '#0000FC',
     '#0000C4',
@@ -67,6 +67,6 @@ define(function() {
     '#F0D0F0',
     '#000000',
     '#000000',
-  ]);
+  ];
   
 });
