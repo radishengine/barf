@@ -9,7 +9,7 @@ function(
   for (var k of Object.keys(charmap)) {
     charLookup[charmap[k]] = k;
   }
-
+  
   function RCRData() {
   }
   RCRData.prototype = {
@@ -20,6 +20,7 @@ function(
     $locationTitleStringIDs: 'prg[1]:$1CBB-$1CDE',
     $shopConvos: 'prg[2]:$1F46-$21D2',
     $miscStrings: 'prg[3]:$3200-$3E00',
+    $shopSubmenuStrings: 'prg[2]:$2351-$23E2',
     
     charmap: charmap,
     charLookup: charLookup,
@@ -49,13 +50,12 @@ function(
       return bytes;
     },
     
-    load: function(nesRom) {
-      let npcNameData = nesRom.get(this.$npcNames);
-      let bank = npcNameData.bank;
-      let pos = npcNameData.bankOffset;
+    readStrings: function(data) {
+      let bank = data.bank;
+      let pos = data.bankOffset;
       var dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
-      let firstOffset = bank.byteLength;
-      this.npcNames = [];
+      let firstOffset = data.bankOffset + data.byteLength;
+      let list = [];
       do {
         let offset = dv.getUint16(pos, true);
         const highBit = offset & 0x8000;
@@ -64,81 +64,22 @@ function(
           firstOffset = Math.min(firstOffset, offset);
           var endOffset = offset;
           while (bank[endOffset] !== 5) endOffset++;
-          this.npcNames.push(this.decodeText(bank.subarray(offset, endOffset)));
+          list.push(this.decodeText(bank.subarray(offset, endOffset)));
         }
         else {
-          // first two: $0672, $0677
-          this.npcNames.push(offset);
+          list.push(offset);
         }
         pos += 2;
       } while (pos < firstOffset);
-      
-      let convoData = nesRom.get(this.$conversationStrings);
-      bank = convoData.bank;
-      pos = convoData.bankOffset;
-      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
-      firstOffset = bank.byteLength;
-      this.conversationStrings = [];
-      do {
-        let offset = dv.getUint16(pos, true);
-        const highBit = offset & 0x8000;
-        if (highBit) {
-          offset ^= 0x8000;
-          firstOffset = Math.min(firstOffset, offset);
-          var endOffset = offset;
-          while (bank[endOffset] !== 5) endOffset++;
-          this.conversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
-        }
-        else {
-          this.conversationStrings.push(offset);
-        }
-        pos += 2;
-      } while (pos < firstOffset);
-      
-      let shopConvoData = nesRom.get(this.$shopConvos);
-      bank = shopConvoData.bank;
-      pos = shopConvoData.bankOffset;
-      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
-      firstOffset = bank.byteLength;
-      this.shopConversationStrings = [];
-      do {
-        let offset = dv.getUint16(pos, true);
-        const highBit = offset & 0x8000;
-        if (highBit) {
-          offset ^= 0x8000;
-          firstOffset = Math.min(firstOffset, offset);
-          var endOffset = offset;
-          while (bank[endOffset] !== 5) endOffset++;
-          this.shopConversationStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
-        }
-        else {
-          this.shopConversationStrings.push(offset);
-        }
-        pos += 2;
-      } while (pos < firstOffset);
-      
-      let miscStringData = nesRom.get(this.$miscStrings);
-      bank = miscStringData.bank;
-      pos = miscStringData.bankOffset;
-      dv = new DataView(bank.buffer, bank.byteOffset, bank.byteLength);
-      firstOffset = bank.byteLength;
-      this.miscStrings = [];
-      do {
-        let offset = dv.getUint16(pos, true);
-        const highBit = offset & 0x8000;
-        if (highBit) {
-          offset ^= 0x8000;
-          firstOffset = Math.min(firstOffset, offset);
-          var endOffset = offset;
-          while (bank[endOffset] !== 5) endOffset++;
-          this.miscStrings.push(this.decodeText(bank.subarray(offset, endOffset)));
-        }
-        else {
-          this.miscStrings.push(offset);
-        }
-        pos += 2;
-      } while (pos < firstOffset);
-      
+      return list;
+    },
+    
+    load: function(nesRom) {
+      this.npcNames = this.readStrings(nesRom.get(this.$npcNames));
+      this.conversationStrings = this.readStrings(nesRom.get(this.$conversationStrings));
+      this.shopConversationStrings = this.readStrings(nesRom.get(this.$shopConvos));
+      this.miscStrings = this.readStrings(nesRom.get(this.$miscStrings));
+      this.shopSubmenuStrings = this.readStrings(nesRom.get(this.$shopSubmenuStrings));
     },
     
   };
